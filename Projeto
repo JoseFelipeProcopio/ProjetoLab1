@@ -1,0 +1,1384 @@
+#include <stdio.h>
+#include <string.h>
+#include <locale.h>
+
+typedef struct presidencial{
+	char nome[5][100];
+	char cpf[5][11];
+	int dia[5][2];
+	int mes[5][2];
+	int ano[5][4];
+	float valorpre;
+} Presidencial;
+
+typedef struct luxoSimples{
+	char nome[3][100];
+	char cpf[3][11];
+		int dia[3][2];
+		int mes[3][2];
+		int ano[3][4];
+		float valorls;
+}LuxoSimples;
+
+typedef struct luxoDuplo{
+	char nome[3][100];
+	char cpf[3][11];
+		int dia[3][2];
+		int mes[3][2];
+		int ano[3][4];
+		float valorld;
+}LuxoDuplo;
+
+typedef struct luxoTriplo{
+	char nome[3][100];
+	char cpf[3][11];
+		int dia[3][2];
+		int mes[3][2];
+		int ano[3][4];
+		float valorlt;
+}LuxoTriplo;
+
+typedef struct exSimples{
+	char nome[3][100];
+	char cpf[3][11];
+		int dia[3][2];
+		int mes[3][2];
+		int ano[3][4];
+		float valorexs;
+}ExSimples;
+
+typedef struct exDuplo{
+	char nome[3][100];
+	char cpf[3][11];
+		int dia[3][2];
+		int mes[3][2];
+		int ano[3][4];
+		float valorexd;
+}ExDuplo;
+
+typedef struct exTriplo{
+	char nome[3][100];
+	char cpf[3][11];
+		int dia[3][2];
+		int mes[3][2];
+		int ano[3][4];
+		float valorext;
+}ExTriplo;
+
+Presidencial pre[5];
+LuxoSimples ls[5];
+LuxoDuplo ld[15];
+LuxoTriplo lt[20];
+ExSimples exS[5];
+ExDuplo exD[15];
+ExTriplo exT[20];
+
+int numpre=0;
+int numls=0;
+int numld=0;
+int numlt=0;
+int numexs=0;
+int numexd=0;
+int numext=0;
+
+
+FILE *Quartos_Presidencial;
+FILE *Quartos_Luxo_Simples;
+FILE *Quartos_Luxo_Duplo;
+FILE *Quartos_Luxo_Triplo;
+FILE *Quartos_Executivo_Simples;
+FILE *Quartos_Executivo_Duplo;
+FILE *Quartos_Executivo_Triplo;
+FILE *Boleto;
+
+void Registrar();
+void Registrar_Presidencial();
+void Registrar_LuxoSimples();
+void Registrar_LuxoDuplo();
+void Registrar_LuxoTriplo();
+void Registrar_ExecutivoSimples();
+void Registrar_ExecutivoDuplo();
+void Registrar_ExecutivoTriplo();
+void Atualizar();
+void Listar();
+void Buscar();
+void Remover();
+int Servico_Babysitter();
+int Servico_Automovel();
+int Servico_Restaurante();
+void menu();
+void Extras();
+void Criar_Boleto();
+
+float valorPR = 1200.00;
+float valorLS = 520.00;
+float valorLD = 570.00;
+float valorLT = 570.00;
+float valorEXS = 360.00;
+float valorEXD = 385.00;
+float valorEXT = 440.00;
+
+main(){
+	
+	setlocale(LC_ALL,"portuguese");
+	
+	int cont;
+	do{
+		system("cls");
+		menu();
+		system("cls");
+		printf ("\n\t\t   ===============================\n");
+    	printf ("\t\t   |\t                         |\n");
+    	printf("\t\t   |  Acao conluida com sucesso! |\n");
+    	printf ("\t\t   |\t                         |\n");
+    	printf ("\t\t   ===============================\n");
+    	printf ("\n\n");
+		printf("\nDeseja voltar ao menu principal?");
+		printf("\n\n 1- sim \n 2- nao\n");
+		printf("\n Opcao: ");
+		scanf("%d", &cont);
+	} while(cont==1);
+}
+
+void menu(){
+	int opc;
+	do{
+		system("cls");
+		printf ("\t\t\t  Hotel Campina Comfort Premium\n");
+		printf("\n\t\t\t    Bem vindo! O que deseja?\n\n");
+	   	printf ("\n\t\t\t ===============================\n");
+	    printf ("\t\t\t |\t                       |\n");
+    	printf("\t\t\t | 1 - Registrar               |\n");
+    	printf("\t\t\t | 2 - Listar                  |\n");
+    	printf("\t\t\t | 3 - Atualizar Registro      |\n");
+    	printf("\t\t\t | 4 - Buscar Hóspede          |\n");
+    	printf("\t\t\t | 5 - Remover Registro        |\n");
+    	printf("\t\t\t | 0 - Sair                    |\n");
+    	printf ("\t\t\t |\t                       |\n");
+   		printf ("\t\t\t ===============================\n");
+    	printf ("\n\n");
+    	printf("\t\t\t      Selecione uma opcao: ");
+    	fflush(stdin);
+    	scanf("%d", &opc);
+    	system("cls");
+		switch(opc){
+			case 1:
+				Registrar();
+				break;
+			case 2:
+				Listar();
+				break;
+			case 3:
+				Atualizar();
+				break;
+			case 4:
+				Buscar();
+				break;
+			case 5:
+				Remover();
+				break;
+			case 0:
+				return 0;
+				break;
+		}
+	}
+	while(opc!=0);
+}
+
+void Registrar(){
+	int opc;
+	do{
+		system("cls");
+		printf("As opções disponíveis sâo: ");
+		printf("\n");
+	   	printf ("\n\t\t\t ===============================\n");
+	    printf ("\t\t\t |\t                       |\n");
+    	printf("\t\t\t | 1 - Quarto Presidencial          |\n");
+    	printf("\t\t\t | 2 - Quarto Luxo Simples           |\n");
+    	printf("\t\t\t | 3 - Quarto Luxo Duplo           |\n");
+    	printf("\t\t\t | 4 - Quarto Luxo Triplo        |\n");
+    	printf("\t\t\t | 5 - Quarto Executivo Simples      |\n");
+    	printf("\t\t\t | 6 - Quarto Executivo Duplo     |\n");
+    	printf("\t\t\t | 7 - Quarto Executivo Triplo     |\n");
+    	printf("\t\t\t | 0 - Sair                    |\n");
+    	printf ("\t\t\t |\t                       |\n");
+   		printf ("\t\t\t ===============================\n");
+    	printf ("\n\n");
+    	printf("\t\t\t      Selecione uma opcao: ");
+    	fflush(stdin);
+    	scanf("%d", &opc);
+    	system("cls");
+		switch(opc){
+			case 1:
+				Registrar_Presidencial();
+				break;
+			case 2:
+				Registrar_LuxoSimples();
+				break;
+			case 3:
+				Registrar_LuxoDuplo();
+				break;
+			case 4:
+				Registrar_LuxoTriplo();
+				break;
+			case 5:
+				Registrar_ExecutivoSimples();
+				break;
+			case 6:
+				Registrar_ExecutivoDuplo();
+				break;
+			case 7:
+				Registrar_ExecutivoTriplo();
+				break;
+			case 0:
+				menu();
+				break;
+		}
+	}
+	while(opc!=0);
+}
+
+void Registrar_Presidencial(){
+	int qtd, i=0, temp;
+	
+	system("cls");
+	
+	printf("\nInforme a quantidade de pessoas que irão se hospedar: ");
+	fflush(stdin);
+	scanf("%d", &qtd);
+	if(qtd<6){
+		while(i<qtd){
+			fflush(stdin);
+			printf("\nInforme o nome: ");
+			scanf("%s", &pre[numpre].nome[i]);
+			fflush(stdin);
+			printf("\nInforme o cpf: ");
+			scanf("%s", &pre[numpre].cpf[i]);
+			printf("teste");
+			fflush(stdin);
+			printf("\nInforme a data de nascimento: ");
+			printf("\nDia: ");
+			scanf("%d", &pre[numpre].dia[i]);
+			printf("\nMes: ");
+			scanf("%d", &pre[numpre].mes[i]);
+			printf("\nAno: ");
+			scanf("%d", &pre[numpre].ano[i]);
+			i++;
+			
+			if(numpre<5){
+			numpre++;
+					}
+				}
+			}
+			else{
+				system("cls");
+				printf("\t\t\nDesculpe, mas não há espaço no quarto!\n\n");
+				system("PAUSE");
+			}
+			
+			Quartos_Presidencial=fopen("Presidencial.txt", "a");
+			
+			fprintf(Quartos_Presidencial,"\n\tHóspede do quarto Presidencial Num.%d", numpre);
+			fprintf(Quartos_Presidencial,"\nNome: %s", pre[numpre].nome[i]);
+			fprintf(Quartos_Presidencial,"\nCPF: %d", pre[numpre].cpf[i]);
+			fprintf(Quartos_Presidencial,"\nData de nascimento: %d/%d/%d", pre[numpre].dia[i], pre[numpre].mes[i], pre[numpre].ano[i]);
+			fprintf(Quartos_Presidencial, "\n\n------------------------------------------\n\n");
+			
+		printf("\n\t\tQuantos dias pretende se hospedar?");
+		scanf("%d", &temp);
+		system("cls");
+		
+		pre[numpre].valorpre = valorPR*temp; 
+		
+}
+
+void Registrar_LuxoSimples(){
+	int qtd, i=0, temp;
+	
+	system("cls");
+	
+	printf("\nInforme a quantidade de pessoas que irão se hospedar: ");
+	fflush(stdin);
+	scanf("%d", &qtd);
+	if(qtd<6){
+		while(i<qtd){
+			fflush(stdin);
+			printf("\nInforme o nome: ");
+			scanf("%s", &ls[numls].nome[i][100]);
+			fflush(stdin);
+			printf("\nInforme o cpf: ");
+			scanf("%s",ls[numls].cpf[i][11]);
+			fflush(stdin);
+			printf("\nInforme a data de nascimento: ");
+			printf("\nDia: ");
+			scanf("%d", &ls[numls].dia);
+			printf("\nMes: ");
+			scanf("%d", &ls[numls].mes);
+			printf("\nAno: ");
+			scanf("%d", &ls[numls].ano);
+			i++;
+		}
+	}
+	else{
+		system("cls");
+				printf("\t\t\nDesculpe, mas não há espaço no quarto!\n\n");
+				system("PAUSE");
+		}
+		system("cls");
+		
+		
+		printf("\n\t\tQuantos dias pretende se hospedar?");
+		scanf("%d", &temp);
+		system("cls");
+		
+		ls[numls].valorls = valorLS*temp;
+		
+		Quartos_Luxo_Simples=fopen("Luxo_Simples.txt", "a");
+			
+			for(i=0;i<qtd;i++){
+			
+			fprintf(Quartos_Luxo_Simples,"\n\tHóspede do quarto Luxo Simples Num.%d", numls);
+			fprintf(Quartos_Luxo_Simples,"\nNome: %s", ls[numls].nome[i]);
+			fprintf(Quartos_Luxo_Simples,"\nCPF: %d", ls[numls].cpf[i]);
+			fprintf(Quartos_Luxo_Simples,"\nData de nascimento: %d/%d/%d", ls[numls].dia[i], pre[numls].mes[i], pre[numls].ano[numls]);
+			fprintf(Quartos_Luxo_Simples, "\n\n------------------------------------------\n\n");
+			}
+		
+		numls++;
+}
+
+void Registrar_LuxoDuplo(){
+	int qtd, i=0, temp;
+	
+	system("cls");
+	
+	printf("\nInforme a quantidade de pessoas que irão se hospedar: ");
+	fflush(stdin);
+	scanf("%d", &qtd);
+	if(qtd<6){
+		while(i<qtd){
+			fflush(stdin);
+			printf("\nInforme o nome: ");
+			scanf("%s", &ld[numld].nome[i][100]);
+			fflush(stdin);
+			printf("\nInforme o cpf: ");
+			scanf("%s",ld[numld].cpf[i][11]);
+			fflush(stdin);
+			printf("\nInforme a data de nascimento: ");
+			printf("\nDia: ");
+			scanf("%d", &ld[numld].dia);
+			printf("\nMes: ");
+			scanf("%d", &ld[numld].mes);
+			printf("\nAno: ");
+			scanf("%d", &ld[numld].ano);
+			i++;
+		}
+	}
+	
+	else{
+		system("cls");
+				printf("\t\t\nDesculpe, mas não há espaço no quarto!\n\n");
+				system("PAUSE");
+		}
+		system("cls");
+		
+		
+		printf("\n\t\tQuantos dias pretende se hospedar?");
+		scanf("%d", &temp);
+		system("cls");
+		
+		ld[numld].valorld = valorLD*temp;
+		numld++;
+}
+
+void Registrar_LuxoTriplo(){
+	int qtd, i=0, temp;
+	
+	system("cls");
+	
+	printf("\nInforme a quantidade de pessoas que irão se hospedar: ");
+	fflush(stdin);
+	scanf("%d", &qtd);
+	if(qtd<6){
+		while(i<qtd){
+			fflush(stdin);
+			printf("\nInforme o nome: ");
+			scanf("%s", &lt[numlt].nome[i][100]);
+			fflush(stdin);
+			printf("\nInforme o cpf: ");
+			scanf("%s",lt[numlt].cpf[i][11]);
+			fflush(stdin);
+			printf("\nInforme a data de nascimento: ");
+			printf("\nDia: ");
+			scanf("%d", &lt[numlt].dia);
+			printf("\nMes: ");
+			scanf("%d", &lt[numlt].mes);
+			printf("\nAno: ");
+			scanf("%d", &lt[numlt].ano);
+			i++;
+		}
+	}
+	else{
+		system("cls");
+				printf("\t\t\nDesculpe, mas não há espaço no quarto!\n\n");
+				system("PAUSE");
+		}
+		system("cls");
+		
+		
+		printf("\n\t\tQuantos dias pretende se hospedar?");
+		scanf("%d", &temp);
+		system("cls");
+		
+		lt[numlt].valorlt = valorLT*temp;
+		numlt++;
+}
+
+void Registrar_ExecutivoSimples(){
+	int qtd, i=0, temp;
+	
+	system("cls");
+	
+	printf("\nInforme a quantidade de pessoas que irão se hospedar: ");
+	fflush(stdin);
+	scanf("%d", &qtd);
+	if(qtd<6){
+		while(i<qtd){
+			fflush(stdin);
+			printf("\nInforme o nome: ");
+			scanf("%s", &exS[numexs].nome[i][100]);
+			fflush(stdin);
+			printf("\nInforme o cpf: ");
+			scanf("%s",exS[numexs].cpf[i][11]);
+			fflush(stdin);
+			printf("\nInforme a data de nascimento: ");
+			printf("\nDia: ");
+			scanf("%d", &exS[numexs].dia);
+			printf("\nMes: ");
+			scanf("%d", &exS[numexs].mes);
+			printf("\nAno: ");
+			scanf("%d", &exS[numexs].ano);
+			i++;
+		}
+	}
+	else{
+		system("cls");
+				printf("\t\t\nDesculpe, mas não há espaço no quarto!\n\n");
+				system("PAUSE");
+		}
+		system("cls");
+		
+		
+		printf("\n\t\tQuantos dias pretende se hospedar?");
+		scanf("%d", &temp);
+		system("cls");
+		
+		exS[numls].valorexs = valorEXS*temp;
+		numexs++;
+}
+
+void Registrar_ExecutivoDuplo(){
+	int qtd, i=0, temp;
+	
+	system("cls");
+	
+	printf("\nInforme a quantidade de pessoas que irão se hospedar: ");
+	fflush(stdin);
+	scanf("%d", &qtd);
+	if(qtd<6){
+		while(i<qtd){
+			fflush(stdin);
+			printf("\nInforme o nome: ");
+			scanf("%s", &exD[numexd].nome[i][100]);
+			fflush(stdin);
+			printf("\nInforme o cpf: ");
+			scanf("%s",exD[numexd].cpf[i][11]);
+			fflush(stdin);
+			printf("\nInforme a data de nascimento: ");
+			printf("\nDia: ");
+			scanf("%d", &exD[numexd].dia);
+			printf("\nMes: ");
+			scanf("%d", &exD[numexd].mes);
+			printf("\nAno: ");
+			scanf("%d", &exD[numexd].ano);
+			i++;
+		}
+	}
+	else{
+		system("cls");
+				printf("\t\t\nDesculpe, mas não há espaço no quarto!\n\n");
+				system("PAUSE");
+		}
+		system("cls");
+		
+		
+		printf("\n\t\tQuantos dias pretende se hospedar?");
+		scanf("%d", &temp);
+		system("cls");
+		
+		exD[numexd].valorexd = valorEXD*temp;
+		numls++;
+}
+
+void Registrar_ExecutivoTriplo(){
+	int qtd, i=0, temp;
+	
+	system("cls");
+	
+	printf("\nInforme a quantidade de pessoas que irão se hospedar: ");
+	fflush(stdin);
+	scanf("%d", &qtd);
+	if(qtd<6){
+		while(i<qtd){
+			fflush(stdin);
+			printf("\nInforme o nome: ");
+			scanf("%s", &exT[numext].nome[i][100]);
+			fflush(stdin);
+			printf("\nInforme o cpf: ");
+			scanf("%s",exT[numext].cpf[i][11]);
+			fflush(stdin);
+			printf("\nInforme a data de nascimento: ");
+			printf("\nDia: ");
+			scanf("%d", &exT[numext].dia);
+			printf("\nMes: ");
+			scanf("%d", &exT[numext].mes);
+			printf("\nAno: ");
+			scanf("%d", &exT[numext].ano);
+			i++;
+		}
+	}
+	else{
+		system("cls");
+				printf("\t\t\nDesculpe, mas não há espaço no quarto!\n\n");
+				system("PAUSE");
+		}
+		system("cls");
+		
+		
+		printf("\n\t\tQuantos dias pretende se hospedar?");
+		scanf("%d", &temp);
+		system("cls");
+		
+		exT[numexd].valorext = valorEXT*temp;
+		numext++;
+}
+
+void Extras(){
+	int opc;
+	do{
+		printf("\t\tEscolha entre as seguintes opções: ");
+		printf("\n");
+	   	printf ("\n\t\t\t ===============================\n");
+	    printf ("\t\t\t |\t                       |\n");
+    	printf("\t\t\t | 1 - Aluguel de carro          |\n");
+    	printf("\t\t\t | 2 - Babysitter           |\n");
+    	printf("\t\t\t | 3 - Restaurante Delicias da Terra           |\n");
+    	printf("\t\t\t | 0 - Sair                    |\n");
+    	printf ("\t\t\t |\t                       |\n");
+   		printf ("\t\t\t ===============================\n");
+    	printf ("\n\n");
+    	printf("\t\t\t      Selecione uma opcao: ");
+    	fflush(stdin);
+    	scanf("%d", &opc);
+    	system("cls");
+		switch(opc){
+			case 1:
+				Servico_Automovel();
+				break;
+			case 2:
+				Registrar_LuxoSimples();
+				break;
+			case 3:
+				Registrar_LuxoDuplo();
+				break;
+				break;
+			case 0:
+				menu();
+				break;
+		}
+	}
+	while(opc!=0);
+}
+
+int Servico_Automovel(){
+	int opc, valor=0, dias;
+	
+	printf("\t\tAs opções de altomóveis são: ");
+		printf("\n");
+	   	printf ("\n\t\t\t ===============================\n");
+	    printf ("\t\t\t |\t                       |\n");
+    	printf("\t\t\t | 1 - Altomóvel executivo          |\n");
+    	printf("\t\t\t | 2 - Altomóvel luxo           |\n\n");
+    	printf("\t\t\t | 0 - Sair                    |\n");
+    	printf ("\t\t\t |\t                       |\n");
+   		printf ("\t\t\t ===============================\n");
+    	printf ("\n\n");
+    	printf("\t\t\t      Selecione uma opção: ");
+    	fflush(stdin);
+    	scanf("%d", &opc);
+    	system("cls");
+    	
+    	if(opc==1){
+    		printf("\t\tPor quantos dias deseja alugar o altomóvel?\n\t\t");
+    		scanf("&d", &dias);
+    		valor=60*dias;
+		}
+		if(opc==2){
+    		printf("\t\tPor quantos dias deseja alugar o altomóvel?\n\t\t");
+    		scanf("&d", &dias);
+    		valor=100*dias;
+		}
+		if(opc==0){
+    		menu();
+		}
+		
+		printf("\t\tDeseja algum serviço extra?");
+		printf("\n");
+	   	printf ("\n\t\t\t ===============================\n");
+	    printf ("\t\t\t |\t                       |\n");
+    	printf("\t\t\t | 1 - Tanque cheio          |\n");
+    	printf("\t\t\t | 2 - Carro seguro           |\n\n");
+    	printf("\t\t\t | 0 - Sair                    |\n");
+    	printf ("\t\t\t |\t                       |\n");
+   		printf ("\t\t\t ===============================\n");
+    	printf ("\n\n");
+    	fflush(stdin);
+    	scanf("%d", &opc);
+    	system("cls");
+    	
+    	if(opc==1){
+    		valor=valor+300;
+		}
+		if(opc==2){
+    		valor=valor+250;
+		}
+		
+		printf("\t\tServiço ordenado com sucesso!");
+		system("cls");
+		
+		return valor;
+}
+
+int Servico_Babysitter(){
+	int valor=0, dias;
+	
+	printf("\nInforme por quantos dias deseja alugar a babyssiter: ");
+	scanf("%d", &dias);
+	
+	valor=dias*45;
+	
+	return valor;
+}
+
+int Servico_Restaurante(){
+	int opc, kg, valor=0;
+	
+		printf("\t\tPara evitar desperdício, o cliente deve informar previamente a refeição e a quantidade que deseja consumir\n");
+		printf("\t\tEscolha entre as seguintes opções: ");
+		printf("\n");
+	   	printf ("\n\t\t\t ===============================\n");
+	    printf ("\t\t\t |\t                       |\n");
+    	printf("\t\t\t | 1 - Café da manhã (5 R$/kg)          |\n");
+    	printf("\t\t\t | 2 - Almoço (10 R$/kg)           |\n");
+    	printf("\t\t\t | 3 - Jantar (10 R$/kg)           |\n");
+    	printf("\t\t\t | 0 - Sair                    |\n");
+    	printf ("\t\t\t |\t                       |\n");
+   		printf ("\t\t\t ===============================\n");
+    	printf ("\n\n");
+    	printf("\t\t\t      Selecione uma opcao: ");
+    	fflush(stdin);
+    	scanf("%d", &opc);
+    	system("cls");
+    	printf("\n\t\tPor favor, informe a quantidade de alimento (em kg): ");
+    	scanf("%d", &kg);
+    	
+    	if(opc==1){
+    		valor=valor+(kg*5);
+		}
+		if(opc==2){
+    		valor=valor+(kg*10);
+		}
+		if(opc==3){
+			valor=valor+(kg*10);
+		}
+		printf("\t\tServiço ordenado com sucesso!");
+		system("cls");
+		
+		return valor;
+}
+
+void Criar_Boleto(){
+	
+	char cpf[11];
+	int tam, i, count=0;
+	
+	system("cls");
+	printf("\n\t\tPor favor, insira seu cpf para que possamos gerar o boleto: ");
+	scanf ("%s", &cpf);
+	
+	if(numpre!=0){
+		for(tam=0; tam<numpre; tam++){
+			for(i=0; i<5; i++){
+				if(strcmp(cpf,pre[tam].cpf[i])==0){
+					
+					Boleto = fopen("Boleto.txt", "w");
+					
+					fprintf(Boleto,"------------------------------------------");
+					fprintf(Boleto,"\nBoleto do quarto Presidencial Num.%d\n\n", tam);
+					fprintf(Boleto,"Agradecemos sua preferência!\n");
+					fprintf(Boleto,"O valor total a ser pago pela sua estadia é: %f\n", pre[tam].valorpre);
+					fprintf(Boleto,"------------------------------------------");
+					
+					fclose(Boleto);
+				}
+			}
+		}
+		count++;
+	}
+	
+	if(numls!=0){
+		for(tam=0; tam<numls; tam++){
+			for(i=0; i<5; i++){
+				if(strcmp(cpf,ls[tam].cpf[i])==0){
+					
+					Boleto = fopen("Boleto.txt", "a");
+					
+					fprintf(Boleto,"------------------------------------------");
+					fprintf(Boleto,"\nBoleto do quarto de Luxo Simples Num.%d\n\n", tam);
+					fprintf(Boleto,"Agradecemos sua preferência!\n");
+					fprintf(Boleto,"O valor total a ser pago pela sua estadia é: %f\n", ls[tam].valorls);
+					fprintf(Boleto,"------------------------------------------");
+					
+					fclose(Boleto);
+				}
+			}
+		}
+		count++;
+	}
+	
+	if(numld!=0){
+		for(tam=0; tam<numld; tam++){
+			for(i=0; i<5; i++){
+				if(strcmp(cpf,ld[tam].cpf[i])==0){
+					
+					Boleto = fopen("Boleto.txt", "a");
+					
+					fprintf(Boleto,"------------------------------------------");
+					fprintf(Boleto,"\nBoleto do quarto de Luxo Duplo Num.%d\n\n", tam);
+					fprintf(Boleto,"Agradecemos sua preferência!\n");
+					fprintf(Boleto,"O valor total a ser pago pela sua estadia é: %f\n", ld[tam].valorld);
+					fprintf(Boleto,"------------------------------------------");
+					
+					fclose(Boleto);
+				}
+			}
+		}
+		count++;
+	}
+	
+	if(numlt!=0){
+		for(tam=0; tam<numlt; tam++){
+			for(i=0; i<5; i++){
+				if(strcmp(cpf,lt[tam].cpf[i])==0){
+					
+					Boleto = fopen("Boleto.txt", "a");
+					
+					fprintf(Boleto,"------------------------------------------");
+					fprintf(Boleto,"\nBoleto do quarto Luxo Triplo Num.%d\n\n", tam);
+					fprintf(Boleto,"Agradecemos sua preferência!\n");
+					fprintf(Boleto,"O valor total a ser pago pela sua estadia é: %f\n", lt[tam].valorlt);
+					fprintf(Boleto,"------------------------------------------");
+					
+					fclose(Boleto);
+				}
+			}
+		}
+		count++;
+	}
+	
+	if(numexs!=0){
+		for(tam=0; tam<numexs; tam++){
+			for(i=0; i<5; i++){
+				if(strcmp(cpf,exS[tam].cpf[i])==0){
+					
+					Boleto = fopen("Boleto.txt", "a");
+					
+					fprintf(Boleto,"------------------------------------------");
+					fprintf(Boleto,"\nBoleto do quarto Executivo Simples Num.%d\n\n", tam);
+					fprintf(Boleto,"Agradecemos sua preferência!\n");
+					fprintf(Boleto,"O valor total a ser pago pela sua estadia é: %f\n", exS[tam].valorexs);
+					fprintf(Boleto,"------------------------------------------");
+					
+					fclose(Boleto);
+				}
+			}
+		}
+		count++;
+	}
+	
+	if(numexd!=0){
+		for(tam=0; tam<numexd; tam++){
+			for(i=0; i<5; i++){
+				if(strcmp(cpf,exD[tam].cpf[i])==0){
+					
+					Boleto = fopen("Boleto.txt", "a");
+					
+					fprintf(Boleto,"------------------------------------------");
+					fprintf(Boleto,"\nBoleto do quarto Executivo Duplo Num.%d\n\n", tam);
+					fprintf(Boleto,"Agradecemos sua preferência!\n");
+					fprintf(Boleto,"O valor total a ser pago pela sua estadia é: %f\n", exD[tam].valorexd);
+					fprintf(Boleto,"------------------------------------------");
+					
+					fclose(Boleto);
+				}
+			}
+		}
+		count++;
+	}
+	
+	if(numext!=0){
+		for(tam=0; tam<numext; tam++){
+			for(i=0; i<5; i++){
+				if(strcmp(cpf,exT[tam].cpf[i])==0){
+					
+					Boleto = fopen("Boleto.txt", "a");
+					
+					fprintf(Boleto,"------------------------------------------");
+					fprintf(Boleto,"\nBoleto do quarto Executivo Triplo Num.%d\n\n", tam);
+					fprintf(Boleto,"Agradecemos sua preferência!\n");
+					fprintf(Boleto,"O valor total a ser pago pela sua estadia é: %f\n", exT[tam].valorext);
+					fprintf(Boleto,"------------------------------------------");
+					
+					fclose(Boleto);
+				}
+			}
+		}
+		count++;
+	}
+	
+	if(count==0){
+		printf("\n\t\tDesculpe, mas o hóspede não foi encontrado");
+	}
+	
+}
+
+void Buscar(){
+	
+	char cpf[11];
+	int tam, i, count=0;
+	
+	system("cls");
+	printf("\n\t\tPor favor, insira seu cpf para que possamos gerar o boleto: ");
+	scanf ("%s", &cpf);
+	
+	if(numpre!=0){
+		for(tam=0; tam<numpre; tam++){
+			for(i=0; i<5; i++){
+				if(strcmp(cpf,pre[tam].cpf[i])==0){
+					
+					printf("\n\t\tHóspede encontrado!");
+					printf("------------------------------------------");
+					printf("\n\tHóspede do quarto Presidencial Num.%d", tam);
+					printf("\n*Nome do hóspede: %s", pre[tam].nome[i]);
+					printf("\n*CPF do hóspede: %s", pre[tam].nome[i]);
+				}
+			}
+		}
+		count++;
+	}
+	
+	if(numls!=0){
+		for(tam=0; tam<numls; tam++){
+			for(i=0; i<5; i++){
+				if(strcmp(cpf,ls[tam].cpf[i])==0){
+					
+					printf("\n\t\tHóspede encontrado!");
+					printf("------------------------------------------");
+					printf("\n\tHóspede do quarto de Luxo Simples Num.%d", tam);
+					printf("\n*Nome do hóspede: %s", ls[tam].nome[i]);
+					printf("\n*CPF do hóspede: %s", ls[tam].nome[i]);
+				}
+			}
+		}
+		count++;
+	}
+	
+	if(numld!=0){
+		for(tam=0; tam<numld; tam++){
+			for(i=0; i<5; i++){
+				if(strcmp(cpf,ld[tam].cpf[i])==0){
+					
+					printf("\n\t\tHóspede encontrado!");
+					printf("------------------------------------------");
+					printf("\n\tHóspede do quarto de Luxo Duplo Num.%d", tam);
+					printf("\n*Nome do hóspede: %s", ld[tam].nome[i]);
+					printf("\n*CPF do hóspede: %s", ld[tam].nome[i]);
+				}
+			}
+		}
+		count++;
+	}
+	
+	if(numlt!=0){
+		for(tam=0; tam<numlt; tam++){
+			for(i=0; i<5; i++){
+				if(strcmp(cpf,lt[tam].cpf[i])==0){
+					
+					printf("\n\t\tHóspede encontrado!");
+					printf("------------------------------------------");
+					printf("\n\tHóspede do quarto de Luxo Triplo Num.%d", tam);
+					printf("\n*Nome do hóspede: %s", lt[tam].nome[i]);
+					printf("\n*CPF do hóspede: %s", lt[tam].nome[i]);
+				}
+			}
+		}
+		count++;
+	}
+	
+	if(numexs!=0){
+		for(tam=0; tam<numexs; tam++){
+			for(i=0; i<5; i++){
+				if(strcmp(cpf,exS[tam].cpf[i])==0){
+					
+					printf("\n\t\tHóspede encontrado!");
+					printf("------------------------------------------");
+					printf("\n\tHóspede do quarto Executivo Simples Num.%d", tam);
+					printf("\n*Nome do hóspede: %s", exS[tam].nome[i]);
+					printf("\n*CPF do hóspede: %s", exS[tam].nome[i]);
+			}
+		}
+		count++;
+	}
+	
+	if(numexd!=0){
+		for(tam=0; tam<numexd; tam++){
+			for(i=0; i<5; i++){
+				if(strcmp(cpf,exD[tam].cpf[i])==0){
+					
+					printf("\n\t\tHóspede encontrado!");
+					printf("------------------------------------------");
+					printf("\n\tHóspede do quarto Executivo Duplo Num.%d", tam);
+					printf("\n*Nome do hóspede: %s", exD[tam].nome[i]);
+					printf("\n*CPF do hóspede: %s", exD[tam].nome[i]);
+				}
+			}
+		}
+		count++;
+	}
+	
+	if(numext!=0){
+		for(tam=0; tam<numext; tam++){
+			for(i=0; i<5; i++){
+				if(strcmp(cpf,exT[tam].cpf[i])==0){
+					
+					printf("\n\t\tHóspede encontrado!");
+					printf("------------------------------------------");
+					printf("\n\tHóspede do quarto Presidencial Num.%d", tam);
+					printf("\n*Nome do hóspede: %s", exT[tam].nome[i]);
+					printf("\n*CPF do hóspede: %s", exT[tam].nome[i]);
+				}
+			}
+		}
+		count++;
+	}
+	
+	if(count==0){
+		printf("\n\t\tDesculpe, mas o hóspede não foi encontrado");
+	}
+}
+}
+
+void Listar(){
+	Quartos_Presidencial=fopen("Presidencial.txt", "r");
+	Quartos_Luxo_Simples=fopen("Luxo_Simples.txt", "r");
+	Quartos_Luxo_Duplo=fopen("Luxo_Duplo.txt", "r");
+	Quartos_Luxo_Triplo=fopen("Luxo_Triplo.txt", "r");
+	Quartos_Executivo_Simples=fopen("Ex_Simples.txt", "r");
+	Quartos_Executivo_Duplo=fopen("Ex_Simples.txt", "r");
+	Quartos_Executivo_Triplo=fopen("Ex_Triplo.txt", "r");
+	char str1[1000], str2[1000], str3[1000], str4[1000], str5[1000], str6[1000], str7[1000];
+	
+	printf("\n\t\t\tHóspedes dos quartos Presidenciais");
+	printf("\n\n");
+	
+	while(fgets(str1, 100, Quartos_Presidencial)!=NULL){
+	printf("%s\n", str1);
+	}
+	
+	printf("\n\t\t\tHóspedes dos quartos de Luxo Simples");
+	printf("\n\n");
+	
+	while(fgets(str2, 100, Quartos_Luxo_Simples)!=NULL){
+	printf("%s\n", str2);
+	}
+	
+	printf("\n\t\t\tHóspedes dos quartos de Luxo Duplo");
+	printf("\n\n");
+	
+	while(fgets(str3, 100, Quartos_Luxo_Duplo)!=NULL){
+	printf("%s\n", str3);
+	}
+	
+	printf("\n\t\t\tHóspedes dos quartos de Luxo Triplo");
+	printf("\n\n");
+	
+	while(fgets(str4, 100, Quartos_Luxo_Triplo)!=NULL){
+	printf("%s\n", str4);
+	}
+	
+	printf("\n\t\t\tHóspedes dos quartos Executivos Simples");
+	printf("\n\n");
+	
+	while(fgets(str5, 100, Quartos_Executivo_Simples)!=NULL){
+	printf("%s\n", str5);
+	}
+	
+	printf("\n\t\t\tHóspedes dos quartos Executivos Duplos");
+	printf("\n\n");
+	
+	while(fgets(str6, 100, Quartos_Executivo_Duplo)!=NULL){
+	printf("%s\n", str6);
+	}
+	
+	printf("\n\t\t\tHóspedes dos quartos Executivos Triplos");
+	printf("\n\n");
+	
+	while(fgets(str7, 100, Quartos_Executivo_Triplo)!=NULL){
+	printf("%s\n", str7);
+	}
+	
+	system("pause");
+}
+
+void Remover(){
+	char cpf[11];
+	int tam, i, count=0;
+	
+	system("cls");
+	printf("\n\t\tPor favor, insira seu cpf para que possamos encontrar o hóspede: ");
+	scanf ("%s", &cpf);
+				
+					Quartos_Presidencial=fopen("Presidencial.txt", "w");
+					Quartos_Luxo_Simples=fopen("Luxo_Simples.txt", "w");
+					Quartos_Luxo_Duplo=fopen("Luxo_Duplo.txt", "w");
+					Quartos_Luxo_Triplo=fopen("Luxo_Triplo.txt", "w");
+					Quartos_Executivo_Simples=fopen("Ex_Simples.txt", "w");
+					Quartos_Executivo_Duplo=fopen("Ex_Duplo.txt", "w");
+					Quartos_Executivo_Triplo=fopen("Ex_Triplo.txt", "w");
+
+	if(count==0){
+		printf("\n\t\tDesculpe, mas o hóspede não foi encontrado");
+		}
+	}
+
+void Atualizar(){
+	
+	char cpf[11];
+	int tam, tam2=0, i,j=0, count=0;
+	
+	system("cls");
+	printf("\n\t\tPor favor, insira seu cpf para que possamos encontrar o hóspede: ");
+	scanf ("%s", &cpf);
+	
+	if(numpre!=0){
+		for(tam=0; tam<numpre; tam++){
+			for(i=0; i<5; i++){
+				if(strcmp(cpf,pre[tam].cpf[i])==0){
+					
+					printf("\n\t\tEntre com as novas informações: \n");
+					fflush(stdin);
+					printf("\nInforme o nome: ");
+					scanf("%s", &pre[tam].nome[i][100]);
+					fflush(stdin);
+					printf("\nInforme o cpf: ");
+					scanf("%s",pre[tam].cpf[i]);
+					printf("teste");
+					fflush(stdin);
+					printf("\nInforme a data de nascimento: ");
+					printf("\nDia: ");
+					scanf("%d", &pre[tam].dia[i]);
+					printf("\nMes: ");
+					scanf("%d", &pre[tam].mes[i]);
+					printf("\nAno: ");
+					scanf("%d", &pre[tam].ano[i]);
+					}
+					
+				}
+			}	
+			count++;
+			
+			Quartos_Presidencial=fopen("Presidencial.txt", "w");
+			Quartos_Presidencial=fopen("Presidencial.txt", "a");			
+			
+		while(tam2<numpre){
+			for(j;j<5;j++){
+			
+			fprintf(Quartos_Presidencial,"\n\tHóspede do quarto Presidencial Num.%d", tam);
+			fprintf(Quartos_Presidencial,"\nNome: %s", pre[tam2].nome[j]);
+			fprintf(Quartos_Presidencial,"\nCPF: %d", pre[tam2].cpf[i]);
+			fprintf(Quartos_Presidencial,"\nData de nascimento: %d/%d/%d", pre[tam2].dia[j], pre[tam2].mes[i], pre[tam2].ano[j]);
+			fprintf(Quartos_Presidencial, "\n\n------------------------------------------\n\n");
+			}
+		}
+	}
+	
+	if(numls!=0){
+		for(tam=0; tam<numls; tam++){
+			for(i=0; i<5; i++){
+				if(strcmp(cpf,ls[tam].cpf[i])==0){
+					
+					printf("\n\t\tEntre com as novas informações: \n");
+					fflush(stdin);
+					printf("\nInforme o nome: ");
+					scanf("%s", &ls[tam].nome[i][100]);
+					fflush(stdin);
+					printf("\nInforme o cpf: ");
+					scanf("%s",ls[tam].cpf[i]);
+					printf("teste");
+					fflush(stdin);
+					printf("\nInforme a data de nascimento: ");
+					printf("\nDia: ");
+					scanf("%d", &ls[tam].dia[i]);
+					printf("\nMes: ");
+					scanf("%d", &ls[tam].mes[i]);
+					printf("\nAno: ");
+					scanf("%d", &ls[tam].ano[i]);
+				}
+			}
+		}
+		count++;
+		
+		Quartos_Luxo_Simples=fopen("Luxo_Simples.txt", "w");
+		Quartos_Luxo_Simples=fopen("Luxo_Simples.txt", "a");
+			
+		while(tam2<numls){
+			
+			for(j;j<5;j++){
+			
+			fprintf(Quartos_Luxo_Simples,"\n\tHóspede do quarto de Luxo Simples Num.%d", tam);
+			fprintf(Quartos_Luxo_Simples,"\nNome: %s", ls[tam2].nome[j]);
+			fprintf(Quartos_Luxo_Simples,"\nCPF: %d", ls[tam2].cpf[i]);
+			fprintf(Quartos_Luxo_Simples,"\nData de nascimento: %d/%d/%d", ls[tam2].dia[j], ls[tam2].mes[i], ls[tam2].ano[j]);
+			fprintf(Quartos_Luxo_Simples, "\n\n------------------------------------------\n\n");
+			}
+		}
+	}
+	
+	
+	if(numld!=0){
+		for(tam=0; tam<numld; tam++){
+			for(i=0; i<5; i++){
+				if(strcmp(cpf,ld[tam].cpf[i])==0){
+					
+					printf("\n\t\tEntre com as novas informações: \n");
+					fflush(stdin);
+					printf("\nInforme o nome: ");
+					scanf("%s", &ld[tam].nome[i][100]);
+					fflush(stdin);
+					printf("\nInforme o cpf: ");
+					scanf("%s",ld[tam].cpf[i]);
+					printf("teste");
+					fflush(stdin);
+					printf("\nInforme a data de nascimento: ");
+					printf("\nDia: ");
+					scanf("%d", &ld[tam].dia[i]);
+					printf("\nMes: ");
+					scanf("%d", &ld[tam].mes[i]);
+					printf("\nAno: ");
+					scanf("%d", &ld[tam].ano[i]);
+				}
+			}
+		}
+		
+		Quartos_Luxo_Duplo=fopen("Luxo_Duplo.txt", "w");
+		Quartos_Luxo_Duplo=fopen("Luxo_Duplo.txt", "a");
+			
+		while(tam2<numls){
+			
+			for(j;j<5;j++){
+			
+			fprintf(Quartos_Luxo_Duplo,"\n\tHóspede do quarto Luxo Duplo Num.%d", tam);
+			fprintf(Quartos_Luxo_Duplo,"\nNome: %s", ld[tam2].nome[j]);
+			fprintf(Quartos_Luxo_Duplo,"\nCPF: %d", ld[tam2].cpf[i]);
+			fprintf(Quartos_Luxo_Duplo,"\nData de nascimento: %d/%d/%d", ld[tam2].dia[j], ld[tam2].mes[i], ld[tam2].ano[j]);
+			fprintf(Quartos_Luxo_Duplo, "\n\n------------------------------------------\n\n");
+			}
+		}
+		
+		count++;
+	}
+	
+	if(numlt!=0){
+		for(tam=0; tam<numlt; tam++){
+			for(i=0; i<5; i++){
+				if(strcmp(cpf,lt[tam].cpf[i])==0){
+					
+					printf("\n\t\tEntre com as novas informações: \n");
+					fflush(stdin);
+					printf("\nInforme o nome: ");
+					scanf("%s", &lt[tam].nome[i][100]);
+					fflush(stdin);
+					printf("\nInforme o cpf: ");
+					scanf("%s",lt[tam].cpf[i]);
+					printf("teste");
+					fflush(stdin);
+					printf("\nInforme a data de nascimento: ");
+					printf("\nDia: ");
+					scanf("%d", &lt[tam].dia[i]);
+					printf("\nMes: ");
+					scanf("%d", &lt[tam].mes[i]);
+					printf("\nAno: ");
+					scanf("%d", &lt[tam].ano[i]);
+				}
+			}
+		}
+		count++;
+		
+		Quartos_Luxo_Triplo=fopen("Luxo_Triplo.txt", "w");
+		Quartos_Luxo_Triplo=fopen("Luxo_Triplo.txt", "a");
+			
+		while(tam2<numls){
+			
+			for(j;j<5;j++){
+			
+			fprintf(Quartos_Luxo_Triplo,"\n\tHóspede do quarto Luxo Triplo Num.%d", tam);
+			fprintf(Quartos_Luxo_Triplo,"\nNome: %s", lt[tam2].nome[j]);
+			fprintf(Quartos_Luxo_Triplo,"\nCPF: %d", lt[tam2].cpf[i]);
+			fprintf(Quartos_Luxo_Triplo,"\nData de nascimento: %d/%d/%d", lt[tam2].dia[j], lt[tam2].mes[i], lt[tam2].ano[j]);
+			fprintf(Quartos_Luxo_Triplo, "\n\n------------------------------------------\n\n");
+			}
+		}
+		
+	}
+	
+	if(numexs!=0){
+		for(tam=0; tam<numexs; tam++){
+			for(i=0; i<5; i++){
+				if(strcmp(cpf,exS[tam].cpf[i])==0){
+					
+					printf("\n\t\tEntre com as novas informações: \n");
+					fflush(stdin);
+					printf("\nInforme o nome: ");
+					scanf("%s", &exS[tam].nome[i][100]);
+					fflush(stdin);
+					printf("\nInforme o cpf: ");
+					scanf("%s",exS[tam].cpf[i]);
+					printf("teste");
+					fflush(stdin);
+					printf("\nInforme a data de nascimento: ");
+					printf("\nDia: ");
+					scanf("%d", &exS[tam].dia[i]);
+					printf("\nMes: ");
+					scanf("%d", &exS[tam].mes[i]);
+					printf("\nAno: ");
+					scanf("%d", &exS[tam].ano[i]);
+			}
+		}
+		count++;
+		
+		Quartos_Executivo_Simples=fopen("Ex_Simples.txt", "w");
+		Quartos_Executivo_Simples=fopen("Ex_Simples.txt", "a");
+			
+		while(tam2<numls){
+			
+			for(j;j<5;j++){
+			
+			fprintf(Quartos_Executivo_Simples,"\n\tHóspede do quarto Luxo Duplo Num.%d", tam);
+			fprintf(Quartos_Executivo_Simples,"\nNome: %s", exS[tam2].nome[j]);
+			fprintf(Quartos_Executivo_Simples,"\nCPF: %d", exS[tam2].cpf[i]);
+			fprintf(Quartos_Executivo_Simples,"\nData de nascimento: %d/%d/%d", exS[tam2].dia[j], exS[tam2].mes[i], exS[tam2].ano[j]);
+			fprintf(Quartos_Executivo_Simples, "\n\n------------------------------------------\n\n");
+			}
+		}
+	}
+	
+	if(numexd!=0){
+		for(tam=0; tam<numexd; tam++){
+			for(i=0; i<5; i++){
+				if(strcmp(cpf,exD[tam].cpf[i])==0){
+					
+					printf("\n\t\tEntre com as novas informações: \n");
+					fflush(stdin);
+					printf("\nInforme o nome: ");
+					scanf("%s", &exD[tam].nome[i][100]);
+					fflush(stdin);
+					printf("\nInforme o cpf: ");
+					scanf("%s",exD[tam].cpf[i]);
+					printf("teste");
+					fflush(stdin);
+					printf("\nInforme a data de nascimento: ");
+					printf("\nDia: ");
+					scanf("%d", &exD[tam].dia[i]);
+					printf("\nMes: ");
+					scanf("%d", &exD[tam].mes[i]);
+					printf("\nAno: ");
+					scanf("%d", &exD[tam].ano[i]);
+				}
+			}
+		}
+		count++;
+		
+		Quartos_Executivo_Duplo=fopen("Ex_Duplo.txt", "w");
+		Quartos_Executivo_Duplo=fopen("Ex_Duplo.txt", "a");
+			
+		while(tam2<numls){
+			
+			for(j;j<5;j++){
+			
+			fprintf(Quartos_Executivo_Duplo,"\n\tHóspede do quarto Luxo Duplo Num.%d", tam);
+			fprintf(Quartos_Executivo_Duplo,"\nNome: %s", exD[tam2].nome[j]);
+			fprintf(Quartos_Executivo_Duplo,"\nCPF: %d", exD[tam2].cpf[i]);
+			fprintf(Quartos_Executivo_Duplo,"\nData de nascimento: %d/%d/%d", exD[tam2].dia[j], exD[tam2].mes[i], exD[tam2].ano[j]);
+			fprintf(Quartos_Executivo_Duplo, "\n\n------------------------------------------\n\n");
+			}
+		}
+	}
+	
+	if(numext!=0){
+		for(tam=0; tam<numext; tam++){
+			for(i=0; i<5; i++){
+				if(strcmp(cpf,exT[tam].cpf[i])==0){
+					
+					printf("\n\t\tEntre com as novas informações: \n");
+					fflush(stdin);
+					printf("\nInforme o nome: ");
+					scanf("%s", &exT[tam].nome[i][100]);
+					fflush(stdin);
+					printf("\nInforme o cpf: ");
+					scanf("%s",exT[tam].cpf[i]);
+					printf("teste");
+					fflush(stdin);
+					printf("\nInforme a data de nascimento: ");
+					printf("\nDia: ");
+					scanf("%d", &exT[tam].dia[i]);
+					printf("\nMes: ");
+					scanf("%d", &exT[tam].mes[i]);
+					printf("\nAno: ");
+					scanf("%d", &exT[tam].ano[i]);
+				}
+			}
+		}
+		count++;
+		
+		Quartos_Executivo_Triplo=fopen("Ex_Triplo.txt", "w");
+		Quartos_Executivo_Triplo=fopen("Ex_Triplo.txt", "a");
+			
+		while(tam2<numls){
+			
+			for(j;j<5;j++){
+			
+			fprintf(Quartos_Executivo_Duplo,"\n\tHóspede do quarto Luxo Duplo Num.%d", tam);
+			fprintf(Quartos_Executivo_Duplo,"\nNome: %s", exT[tam2].nome[j]);
+			fprintf(Quartos_Executivo_Duplo,"\nCPF: %d", exT[tam2].cpf[i]);
+			fprintf(Quartos_Executivo_Duplo,"\nData de nascimento: %d/%d/%d", exT[tam2].dia[j], exT[tam2].mes[i], exT[tam2].ano[j]);
+			fprintf(Quartos_Executivo_Duplo, "\n\n------------------------------------------\n\n");
+			}
+		}
+	}
+		
+	}
+	
+	if(count==0){
+		printf("\n\t\tDesculpe, mas o hóspede não foi encontrado");
+		}
+	}
